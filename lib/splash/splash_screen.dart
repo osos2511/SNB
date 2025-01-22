@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../core/routes_manager.dart';
 
 class Splash extends StatelessWidget {
@@ -30,7 +29,7 @@ class Splash extends StatelessWidget {
                 animatedTexts: [
                   ScaleAnimatedText(
                     'مرحبا',
-                    textStyle: GoogleFonts.rubikVinyl(
+                    textStyle: GoogleFonts.alexandria(
                       color: Colors.black,
                       fontSize: responsiveFontSize(context, 65),
                       fontWeight: FontWeight.w600,
@@ -40,7 +39,7 @@ class Splash extends StatelessWidget {
                 ],
                 onFinished: () {
                   Navigator.pushReplacementNamed(
-                      context, RoutesManager.welcomeScanRoute);
+                      context, RoutesManager.qrScanRoute);
                 },
               ),
             ),
