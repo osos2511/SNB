@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import '../../core/routes_manager.dart';
 import '../../provider/qr_code_provider.dart';
 
 class QrCodeScanner extends StatefulWidget {
@@ -12,6 +11,7 @@ class QrCodeScanner extends StatefulWidget {
 }
 
 class _QrCodeScannerState extends State<QrCodeScanner> {
+  @override
   void initState() {
     super.initState();
     Provider.of<QrCodeProvider>(context, listen: false).resetScan();
@@ -22,15 +22,6 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     final qrCodeProvider = Provider.of<QrCodeProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Scan Barcode"),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, RoutesManager.welcomeScanRoute);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
       body: Stack(
         children: [
           MobileScanner(
