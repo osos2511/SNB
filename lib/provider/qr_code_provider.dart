@@ -13,11 +13,12 @@ class QrCodeProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    const String apiUrl = 'https://ksaexpo.online/api/qrcode/check';
+    const String checkApiUrl = 'https://ksaexpo.online/api/qrcode/check';
+    const String visitApiUrl = 'https://ksaexpo.online/api/qrcode/visit';
 
     try {
       final response = await http.post(
-        Uri.parse(apiUrl),
+        Uri.parse(checkApiUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'qrcode': code}),
       );
@@ -27,6 +28,9 @@ class QrCodeProvider extends ChangeNotifier {
 
         if (data['status'] != null && data['status'] == true) {
           message = data['message'] ?? 'الحساب مسجل';
+
+          await sendVisitLog(code, visitApiUrl, context);
+
           await showCustomDialog(context, "عملية ناجحة");
         } else {
           message = data['message'] ?? 'الحساب غير مسجل';
@@ -45,6 +49,30 @@ class QrCodeProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> sendVisitLog(String? code, String apiUrl, BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'qrcode': code}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['status'] != null && data['status'] == true) {
+          print("تم تسجيل الزيارة بنجاح.");
+        } else {
+          print("فشل تسجيل الزيارة: ${data['message'] ?? 'خطأ غير معروف'}");
+        }
+      } else {
+        print("خطأ أثناء تسجيل الزيارة , خطأ في الخادم");
+      }
+    } catch (e) {
+      print("Error أثناء تسجيل الزيارة: $e");
+    }
+  }
+
   Future<void> showCustomDialog(BuildContext context, String title) async {
     if (Navigator.canPop(context)) return;
 
@@ -53,14 +81,17 @@ class QrCodeProvider extends ChangeNotifier {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title,textAlign: TextAlign.center,),
+          title: Text(
+            title,
+            textAlign: TextAlign.center,
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 resetScan();
                 Navigator.of(context).pop();
               },
-              child:  Text("تم"),
+              child: Text("تم"),
             ),
           ],
         );
@@ -76,3 +107,5 @@ class QrCodeProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+
