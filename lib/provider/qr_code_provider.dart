@@ -107,3 +107,5 @@ class QrCodeProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+
