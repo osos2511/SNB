@@ -31,18 +31,18 @@ class QrCodeProvider extends ChangeNotifier {
 
           await sendVisitLog(code, visitApiUrl, context);
 
-          await showCustomDialog(context, "عملية ناجحة");
+          await showCustomDialog(context, "عملية ناجحة",'الحساب مسجل');
         } else {
           message = data['message'] ?? 'الحساب غير مسجل';
-          await showCustomDialog(context, "خطأ");
+          await showCustomDialog(context, "خطأ",'الحساب غير مسجل');
         }
       } else {
         message = 'خطأ أثناء فحص الباركود , خطأ في الخادم';
-        await showCustomDialog(context, "خطأ");
+        await showCustomDialog(context, "خطأ",'خطأ في الخادم');
       }
     } catch (e) {
       message = 'Error: $e';
-      await showCustomDialog(context, "خطأ");
+      await showCustomDialog(context, "خطأ",'لا يوجد اتصال بالانترنت');
     } finally {
       isLoading = false;
       notifyListeners();
@@ -73,7 +73,7 @@ class QrCodeProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> showCustomDialog(BuildContext context, String title) async {
+  Future<void> showCustomDialog(BuildContext context, String title,String message) async {
     if (Navigator.canPop(context)) return;
 
     await showDialog(
@@ -81,6 +81,10 @@ class QrCodeProvider extends ChangeNotifier {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
           title: Text(
             title,
             textAlign: TextAlign.center,
